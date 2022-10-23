@@ -10,7 +10,8 @@ import ListItemText from '@mui/material/ListItemText';
 import LogoutIcon from '@mui/icons-material/Logout';
 import MenuIcon from '@mui/icons-material/Menu';
 import Toolbar from '@mui/material/Toolbar';
-import Typography from '@mui/material/Typography';
+import SvgIcon from '@mui/material/SvgIcon';
+import Logo from './logo.js';
 
 import { useNavigate } from "react-router-dom";
 
@@ -45,9 +46,9 @@ export default function Header(props) {
         >
           <MenuIcon/>
         </IconButton>
-        <Typography variant="h6" component="div" textAlign="center" sx={{ flexGrow: 1 }}>
-          JayHerron.org
-        </Typography>
+        <Box component="div" sx={{ display:"flex", flexGrow: 1, justifyContent: "center"}}>
+          <SvgIcon component={Logo} />
+        </Box>
         <IconButton
           size="large"
           edge="start"
