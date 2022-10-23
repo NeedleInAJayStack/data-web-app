@@ -4,7 +4,7 @@ set -euo pipefail
 # This script requires a single argument that points to the directory the built files should be copied to.
 # 
 # Example usage:
-# ./deploy.sh ~/dev/Swift/API/Public
+# scripts/deploy.sh ~/dev/Swift/API/Public
 
 if [ -z $1 ]; then
   echo "Path to destination directory was not provided"
