@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Web app for interacting with Jay's data",
   "main": "index.js",
-  "proxy": "https://data.jayherron.org",
+  "proxy": "http://localhost:8079",
   "homepage": ".",
   "scripts": {
     "start": "react-scripts start",

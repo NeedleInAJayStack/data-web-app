@@ -30,6 +30,7 @@ export default class UtilityInput extends React.Component {
     // Props:
     // {
     //   token: string
+    //   withLoginRetry: (() => any) => Promise<any>
     // }
     
     this.state = {
@@ -47,7 +48,8 @@ export default class UtilityInput extends React.Component {
   }
 
   async fetchPoints() {
-    let points = await getRecsTag("siteMeter", this.props.token);
+    let points = await this.props.withLoginRetry(() => getRecsTag("siteMeter", this.props.token));
+    console.log(points)
     this.setState({...this.state, points: points});
   }
   
@@ -59,7 +61,8 @@ export default class UtilityInput extends React.Component {
     let startDateSecs = getUnixTime(startDate);
     let endDateSecs = getUnixTime(endDate);
     
-    let json = await getHis(point.id, startDateSecs, endDateSecs, this.props.token);
+    let json = await this.props.withLoginRetry(getHis(point.id, startDateSecs, endDateSecs, this.props.token));
+    console.log(json);
     let his = json.map(row => {
       let ts = parseISO(row.ts)
       let value = row.value
@@ -138,12 +141,13 @@ export default class UtilityInput extends React.Component {
           <Chart
             id="chart"
             point={this.state.point}
-            his={this.state.his}
+            his={this.state.his ?? []}
           />
         </Box>
         <Input
           token={this.props.token}
           point={this.state.point}
+          withLoginRetry={this.props.withLoginRetry}
           onSave={ () => {
             this.onDataAdded();
           }}

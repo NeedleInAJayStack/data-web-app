@@ -13,7 +13,7 @@ import Box from '@mui/material/Box';
 import Header from "./header";
 import Login from "./login";
 import UtilityInput from "./utility-input";
-import { getAuthToken } from "./API";
+import { getAuthTokenBasic, getAuthTokenSession } from "./API";
 
 // https://material.io/resources/color/#!/?view.left=0&view.right=0&primary.color=B2DFDB&secondary.color=616161
 const theme = createTheme({
@@ -27,6 +27,8 @@ const theme = createTheme({
   },
 });
 
+const sessionCookieName = "vapor-session";
+
 export default function App() {
   let [state, setState] = React.useState({
     user: null,
@@ -35,23 +37,46 @@ export default function App() {
 
   let onLogin = (username, password, onSuccess, onFailure) => {
     try {
-      getAuthToken(username, password).then((result) => {
+      getAuthTokenBasic(username, password).then((result) => {
         setState({
           user: username,
           token: result.token
         });
         onSuccess();
       });
-    } catch {
+    } catch (err) {
+      console.log(err);
       onFailure();
     }
   };
 
+  async function withLoginRetry(fn) {
+    let result = await fn();
+    if (result.ok) {
+      return result.json();
+    } else if (result.status === 401 && vaporSessionExists()) {
+      let result = await getAuthTokenSession();
+      console.log(state.token)
+      setState({
+        user: state.user,
+        token: result.token
+      });
+      console.log(state.token)
+      let newResult = await fn()
+      if (newResult.ok) {
+        return newResult.json();
+      } else {
+        throw "Failed to fetch data after retrying login"
+        // TODO: Redirect to login page
+      }
+    }
+  }
+
   function clearTokens() {
     setState({
-      authToken: null,
-      refreshToken: null
+      token: null
     });
+    document.cookie = `${sessionCookieName}=; expires=Thu, 01 Jan 1970 00:00:00 UTC;`;
   }
 
   let onLogout = () => {
@@ -64,7 +89,7 @@ export default function App() {
         <Routes>
           <Route path="/login" element={ <Login onLogin={onLogin} /> } />
           <Route path="/"  element={ <RequireAuth token={state.token} onLogout={onLogout} /> } >
-            <Route path="/utility-input" element={ <UtilityInput token={state.token} /> } />
+            <Route path="/utility-input" element={ <UtilityInput token={state.token} withLoginRetry={withLoginRetry}/> } />
             <Route path="*" element={ <Navigate to="/" replace /> } />
             <Route path="" element={ <Navigate to="/utility-input" replace /> } />
           </Route>
@@ -79,7 +104,7 @@ function RequireAuth(props) {
   let onLogout = props.onLogout;
   let location = useLocation();
 
-  if (!authToken) {
+  if (!authToken && !vaporSessionExists()) {
     // Redirect them to the /login page, but save the current location they were
     // trying to go to when they were redirected. This allows us to send them
     // along to that page after they login, which is a nicer user experience
@@ -96,4 +121,8 @@ function RequireAuth(props) {
       </Box>
     </Box>
   );
+}
+
+function vaporSessionExists() {
+  return document.cookie.split(';').some((item) => item.trim().startsWith(`${sessionCookieName}=`));
 }

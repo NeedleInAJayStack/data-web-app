@@ -1,7 +1,7 @@
 import base64 from "base-64";
 import formatISO from "date-fns/formatISO";
 
-export async function getAuthToken(username, password) {
+export async function getAuthTokenBasic(username, password) {
   let response = await fetch("/auth/token", {
     method: 'GET',
     headers: {
@@ -15,15 +15,26 @@ export async function getAuthToken(username, password) {
   }
 }
 
+export async function getAuthTokenSession() {
+  // Rely on the session cookie to authenticate
+  let response = await fetch("/auth/token", {
+    method: 'GET'
+  })
+  if (response.ok) {
+    return await response.json();
+  } else {
+    throw 'Invalid login'
+  }
+}
+
 export async function getRecsTag(tag, token) {
   try {
-    let response = await fetch("/recs/tag/"+ tag, {
+    return await fetch("/recs/tag/"+ tag, {
     method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     });
-    return await response.json();
   } catch (e) {
     console.log(e);
   }
@@ -31,13 +42,12 @@ export async function getRecsTag(tag, token) {
 
 export async function getHis(id, start, end, token) {
   try {
-    let response = await fetch("/his/" + id + "?start=" + start + "&end=" + end, {
+    return await fetch("/his/" + id + "?start=" + start + "&end=" + end, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
       }
     });
-    return await response.json();
   } catch (e) {
     console.log(e);
   }
@@ -50,7 +60,7 @@ export async function postHis(id, ts, value, token) {
       ts: formatISO(ts), // We use date-fns implementation here to avoid milliseconds (Swift hates them and me)
       value: value
     };
-    await fetch("/his/" + id, {
+    let response = fetch("/his/" + id, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
@@ -58,6 +68,7 @@ export async function postHis(id, ts, value, token) {
       },
       body: JSON.stringify(body)
     });
+    return response;
   } catch (e) {
     console.log(e);
   }

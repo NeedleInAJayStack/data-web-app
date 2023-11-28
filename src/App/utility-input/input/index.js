@@ -23,6 +23,7 @@ export default class Input extends React.Component {
     //   token: string,
     //   point: {id: string, dis: string}
     //   onSave: () => Void
+    //   withLoginRetry: (() => any) => Promise<any>
     // }
     
     this.state = {
@@ -32,11 +33,13 @@ export default class Input extends React.Component {
   }
   
   async writeHis() {
-    await postHis(
-      this.props.point.id,
-      this.state.date,
-      this.state.value,
-      this.props.token
+    await this.props.withLoginRetry(
+      () => postHis(
+        this.props.point.id,
+        this.state.date,
+        this.state.value,
+        this.props.token
+      )
     );
   }
 
