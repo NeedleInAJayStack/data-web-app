@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 set -euo pipefail
 
 # This script requires a single argument that points to the directory the built files should be copied to.
