@@ -6,10 +6,9 @@
   "proxy": "https://data.jayherron.org",
   "homepage": ".",
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test --env=jsdom",
-    "eject": "react-scripts eject",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "npx serve@latest ./build",
     "deploy": "cp -r build/* ../backend/Public/"
   },
   "author": "Jay Herron",
@@ -24,6 +23,7 @@
     "chart.js": "^3.9.1",
     "chartjs-adapter-date-fns": "^2.0.0",
     "date-fns": "^2.29.3",
+    "next": "^14.2.6",
     "react": "^18.2.0",
     "react-chartjs-2": "^4.3.1",
     "react-dom": "^18.2.0",
