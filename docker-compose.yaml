@@ -1,0 +1,28 @@
+services:
+  api:
+    image: ghcr.io/needleinajaystack/api-server:main
+    environment:
+      USERNAME: test
+      PASSWORD: test
+      HOST: localhost
+      PORT: 8080
+      JWT_SECRET: test-secret
+      DATABASE_HOST: db
+      DATABASE_USERNAME: postgres
+      DATABASE_PASSWORD: postgres
+      DATABASE_NAME: postgres
+  db:
+    image: timescale/timescaledb:latest-pg16
+    restart: unless-stopped
+    volumes:
+      - db_data:/var/lib/postgresql/data/pgdata
+    environment:
+      PGDATA: /var/lib/postgresql/data/pgdata
+      POSTGRES_HOST_AUTH_METHOD: trust
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - '${DATABASE_PORT:-5432}:5432'
+
+volumes:
+  db_data:
