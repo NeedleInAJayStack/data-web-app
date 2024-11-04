@@ -20,7 +20,7 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 
 import Chart from './chart';
 import Input from './input';
-import { getHis, getRecsTag } from "../API";
+import { getHis, getRecs } from "../API";
 
 export default class UtilityInput extends React.Component {
 
@@ -47,7 +47,7 @@ export default class UtilityInput extends React.Component {
   }
 
   async fetchPoints() {
-    let points = await getRecsTag("siteMeter", this.props.token);
+    let points = await getRecs("siteMeter", this.props.token);
     this.setState({...this.state, points: points});
   }
   

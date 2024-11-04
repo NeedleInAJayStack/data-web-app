@@ -2,11 +2,13 @@ import base64 from "base-64";
 import formatISO from "date-fns/formatISO";
 
 export async function getAuthToken(username, password) {
-  let response = await fetch("/auth/token", {
+  let url = "/auth/token"
+  let response = await fetch(url, {
     method: 'GET',
     headers: {
       'Authorization': 'Basic ' + base64.encode(username + ":" + password)
-    }
+    },
+
   })
   if (response.ok) {
     return await response.json();
@@ -15,9 +17,13 @@ export async function getAuthToken(username, password) {
   }
 }
 
-export async function getRecsTag(tag, token) {
+export async function getRecs(tag, token) {
   try {
-    let response = await fetch("/recs/tag/"+ tag, {
+    var url = "/recs"
+    if (tag != "") {
+      url = url + "?" + new URLSearchParams({tag: tag})
+    }
+    let response = await fetch(url, {
     method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
@@ -31,7 +37,11 @@ export async function getRecsTag(tag, token) {
 
 export async function getHis(id, start, end, token) {
   try {
-    let response = await fetch("/his/" + id + "?start=" + start + "&end=" + end, {
+    let url = `/recs/${id}/history?` + new URLSearchParams({
+      start: start,
+      end: end,
+    })
+    let response = await fetch(url, {
       method: 'GET',
       headers: {
         'Authorization': 'Bearer ' + token
@@ -50,7 +60,8 @@ export async function postHis(id, ts, value, token) {
       ts: formatISO(ts), // We use date-fns implementation here to avoid milliseconds (Swift hates them and me)
       value: value
     };
-    await fetch("/his/" + id, {
+    let url = `/rec/${id}/history`
+    await fetch(url, {
       method: 'POST',
       headers: {
         'Authorization': 'Bearer ' + token,
