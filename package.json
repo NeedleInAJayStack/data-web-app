@@ -2,7 +2,7 @@
   "name": "data-web-app",
   "version": "1.0.0",
   "description": "Web app for interacting with Jay's data",
-  "main": "index.js",
+  "main": "server.js",
   "proxy": "https://data.jayherron.org",
   "homepage": ".",
   "scripts": {
