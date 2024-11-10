@@ -60,7 +60,7 @@ export default function App() {
 
   return (
     <ThemeProvider theme={theme}>
-      <BrowserRouter>
+      <BrowserRouter basename="/app">
         <Routes>
           <Route path="/login" element={ <Login onLogin={onLogin} /> } />
           <Route path="/"  element={ <RequireAuth token={state.token} onLogout={onLogout} /> } >

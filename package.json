@@ -10,7 +10,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject",
-    "deploy": "cp -r build/* ../backend/Public/"
+    "deploy": "cp -r build/* ../../Go/api-server/public/app/"
   },
   "author": "Jay Herron",
   "license": "ISC",
