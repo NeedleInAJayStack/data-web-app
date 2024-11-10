@@ -56,11 +56,10 @@ export async function getHis(id, start, end, token) {
 export async function postHis(id, ts, value, token) {
   try {
     let body = {
-      pointId: id,
       ts: formatISO(ts), // We use date-fns implementation here to avoid milliseconds (Swift hates them and me)
       value: value
     };
-    let url = `/rec/${id}/history`
+    let url = `/recs/${id}/history`
     await fetch(url, {
       method: 'POST',
       headers: {
