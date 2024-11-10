@@ -2,7 +2,7 @@ import base64 from "base-64";
 import formatISO from "date-fns/formatISO";
 
 export async function getAuthToken(username, password) {
-  let url = "/auth/token"
+  let url = "/api/auth/token"
   let response = await fetch(url, {
     method: 'GET',
     headers: {
@@ -19,7 +19,7 @@ export async function getAuthToken(username, password) {
 
 export async function getRecs(tag, token) {
   try {
-    var url = "/recs"
+    var url = "/api/recs"
     if (tag != "") {
       url = url + "?" + new URLSearchParams({tag: tag})
     }
@@ -37,7 +37,7 @@ export async function getRecs(tag, token) {
 
 export async function getHis(id, start, end, token) {
   try {
-    let url = `/recs/${id}/history?` + new URLSearchParams({
+    let url = `/api/recs/${id}/history?` + new URLSearchParams({
       start: start,
       end: end,
     })
@@ -59,7 +59,7 @@ export async function postHis(id, ts, value, token) {
       ts: formatISO(ts), // We use date-fns implementation here to avoid milliseconds (Swift hates them and me)
       value: value
     };
-    let url = `/recs/${id}/history`
+    let url = `/api/recs/${id}/history`
     await fetch(url, {
       method: 'POST',
       headers: {
